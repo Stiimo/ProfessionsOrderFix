@@ -1,6 +1,6 @@
 ## Title: Professions Order Fix
 ## Author: Stiimo (Stiimo#2762)
-## Version: 0.9.0-alpha1
+## Version: 0.9.0
 ## IconTexture: Interface\Icons\INV_Hammer_15
 ## Notes: Fixes for Professions Order API
 ## X-Curse-Project-ID: 1115863
