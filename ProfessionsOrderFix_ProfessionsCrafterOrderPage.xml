@@ -2,20 +2,6 @@
 ..\..\..\..\..\WoW\Data\Interface\AddOns\Blizzard_SharedXML\UI.xsd">
 	<Script file="ProfessionsOrderFix_ProfessionsCrafterOrderPage.lua"/>
 
-	<Button name="ProfessionsOrderFix_ProfessionsCrafterOrderListElementTemplate" mixin="ProfessionsOrderFix_ProfessionsCrafterOrderListElementMixin" registerForClicks="LeftButtonUp, RightButtonUp" virtual="true">
-		<Size y="20"/>
-		<Layers>
-			<Layer level="OVERLAY">
-				<Texture parentKey="HighlightTexture" atlas="auctionhouse-ui-row-highlight" alphaMode="ADD" setAllPoints="true" hidden="true"/>
-			</Layer>
-		</Layers>
-		<Scripts>
-			<OnEnter method="OnEnter"/>
-			<OnLeave method="OnLeave"/>
-			<OnClick method="OnClick"/>
-		</Scripts>
-	</Button>
-
 	<Frame name="ProfessionsOrderFix_ProfessionsCraftingOrderPageTemplate" parent="ProfessionsOrderFix_ProfessionsFrame" setAllPoints="true" mixin="ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin" virtual="true">
 		<Scripts>
 			<OnLoad method="OnLoad"/>
@@ -196,7 +182,7 @@
 				</Frames>
 			</Frame>
 
-			<Frame parentKey="OrderView" inherits="ProfessionsOrderFix_ProfessionsCrafterOrderViewTemplate" hidden="true"/>
+			<Frame parentKey="OrderView" inherits="ProfessionsCrafterOrderViewTemplate" hidden="true"/>
 		</Frames>
 	</Frame>
 </Ui>

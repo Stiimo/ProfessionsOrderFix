@@ -20,77 +20,6 @@ local function SetTabTitleWithCount(tabButton, type, count)
 	end
 end
 
-ProfessionsOrderFix_ProfessionsCrafterOrderListElementMixin = CreateFromMixins(TableBuilderRowMixin);
-
-function ProfessionsOrderFix_ProfessionsCrafterOrderListElementMixin:OnLineEnter()
-	self.HighlightTexture:Show();
-
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-
-	local reagents = {};
-	local qualityIDs = C_TradeSkillUI.GetQualitiesForRecipe(self.option.spellID);
-	local qualityIdx = self.option.minQuality or 1;
-	GameTooltip:SetRecipeResultItem(self.option.spellID, reagents, nil, nil, qualityIDs and qualityIDs[qualityIdx]);
-
-	if IsModifiedClick("DRESSUP") then
-		ShowInspectCursor();
-	end
-
-	self:SetScript("OnUpdate", self.OnUpdate);
-end
-
-function ProfessionsOrderFix_ProfessionsCrafterOrderListElementMixin:OnLineLeave()
-	self.HighlightTexture:Hide();
-
-	GameTooltip:Hide();
-	ResetCursor();
-	self:SetScript("OnUpdate", nil);
-end
-
--- Set and cleared dynamically in OnEnter and OnLeave
-function ProfessionsOrderFix_ProfessionsCrafterOrderListElementMixin:OnUpdate()
-	if IsModifiedClick("DRESSUP") then
-		ShowInspectCursor();
-	else
-		ResetCursor();
-	end
-end
-
-function ProfessionsOrderFix_ProfessionsCrafterOrderListElementMixin:OnClick(button)
-	if button == "LeftButton" then
-		if self.browseType == OrderBrowseType.Bucketed then
-			self.pageFrame:SelectRecipeFromBucket(self.option);
-		elseif self.browseType == OrderBrowseType.Flat then
-			self.pageFrame:ViewOrder(self.option);
-		end
-	elseif button == "RightButton" then
-		MenuUtil.CreateContextMenu(self, function(owner, rootDescription)
-			rootDescription:SetTag("MENU_PROFESSIONS_CRAFTER_ORDER");
-
-			local recipeID = self.option.spellID;
-			local currentlyFavorite = C_TradeSkillUI.IsRecipeFavorite(recipeID);
-			local text = currentlyFavorite and BATTLE_PET_UNFAVORITE or BATTLE_PET_FAVORITE;
-			rootDescription:CreateButton(text, function()
-				C_TradeSkillUI.SetRecipeFavorite(recipeID, not currentlyFavorite);
-			end);
-
-			if self.orderType == Enum.CraftingOrderType.Personal then
-				rootDescription:CreateButton(PROFESSIONS_DECLINE_ORDER, function()
-					local emptyRejectionNote = "";
-					C_CraftingOrders.RejectOrder(self.option.orderID, emptyRejectionNote, self.professionInfo.profession);
-				end);
-			end
-		end);
-	end
-end
-
-function ProfessionsOrderFix_ProfessionsCrafterOrderListElementMixin:Init(elementData)
-	self.option = elementData.option;
-	self.browseType = elementData.browseType;
-	self.pageFrame = elementData.pageFrame;
-end
-
-
 ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin = CreateFromMixins(ProfessionsRecipeListPanelMixin);
 
 function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:InitButtons()
@@ -430,7 +359,7 @@ function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:OnShow()
 	FrameUtil.RegisterFrameForEvents(self, ProfessionsCraftingOrderPageEvents);
 	EventRegistry:RegisterCallback("ProfessionsRecipeListMixin.Event.OnRecipeSelected", self.OnRecipeSelected, self);
 
-	C_TradeSkillUI.SetOnlyShowAvailableForOrders(true);
+	-- C_TradeSkillUI.SetOnlyShowAvailableForOrders(true);
 
 	self:SetTitle();
 
@@ -453,9 +382,11 @@ function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:OnHide()
 		self.requestCallback = nil;
 	end
 
-	C_TradeSkillUI.SetOnlyShowAvailableForOrders(false);
+	-- C_TradeSkillUI.SetOnlyShowAvailableForOrders(false);
 
-	self:StoreCollapses(self.BrowseFrame.RecipeList.ScrollBox);
+	if self.BrowseFrame.RecipeList.ScrollBox:GetDataProvider() then
+		self:StoreCollapses(self.BrowseFrame.RecipeList.ScrollBox);
+	end
 end
 
 function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:UpdateOrdersRemaining()
@@ -665,7 +596,33 @@ function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:RequestMoreOrders
 	self:SendOrderRequest(request);
 end
 
+local recipesWithBrokenOrders = {
+    446935,
+    446934
+};
+
+local function IsBrokenOrder(order)
+    for _, value in pairs(recipesWithBrokenOrders) do
+        if value == order.spellID then
+			return true;
+		end
+	end
+	return false;
+end
+
+local function FixBrokenOrder(order)
+	for _, reagent in pairs(order.reagents) do
+		if reagent.slotIndex == 10 then
+			reagent.slotIndex = reagent.reagent.dataSlotIndex;
+			break;
+		end
+	end
+end
+
 function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:ShowGeneric(orders, browseType, offset, isSorted)
+	if not ProfessionsOrderFix_ProfessionsFrame:IsVisible() then
+		return;
+	end
 	self.BrowseFrame.OrderList.LoadingSpinner:Hide();
 	self.BrowseFrame.OrderList.ScrollBox:Show();
 
@@ -712,6 +669,9 @@ function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:ShowGeneric(order
 	if offset == 0 then
 		dataProvider = CreateDataProvider();
 		for _, order in ipairs(orders) do
+			if IsBrokenOrder(order) then
+				FixBrokenOrder(order);
+			end
 			dataProvider:Insert({option = order, browseType = browseType, pageFrame = self});
 		end
 		self.BrowseFrame.OrderList.ScrollBox:SetDataProvider(dataProvider);
@@ -719,6 +679,9 @@ function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:ShowGeneric(order
 		dataProvider = self.BrowseFrame.OrderList.ScrollBox:GetDataProvider();
 		for idx = offset + 1, #orders do
 			local order = orders[idx];
+			if IsBrokenOrder(order) then
+				FixBrokenOrder(order);
+			end
 			dataProvider:Insert({option = order, browseType = browseType, pageFrame = self});
 		end
 	end

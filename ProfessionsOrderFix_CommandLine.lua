@@ -37,6 +37,8 @@ end
 function ProfessionsOrderFix_ToggleWindow()
     if ProfessionsOrderFix_ProfessionsFrame:IsShown() then
         HideUIPanel(ProfessionsOrderFix_ProfessionsFrame)
+    elseif ProfessionsOrderFix_ProfessionsFrame:IfShouldBeClosed() then
+        print("Professions Order Fix window can only be openend along with Blizzard's Professions Frame on Orders Tab.")
     else
         ShowUIPanel(ProfessionsOrderFix_ProfessionsFrame)
     end

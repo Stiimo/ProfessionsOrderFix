@@ -1,6 +1,6 @@
 ## Title: Professions Order Fix
 ## Author: Stiimo (Stiimo#2762)
-## Version: 0.9.0
+## Version: 0.9.0-alpha1
 ## IconTexture: Interface\Icons\INV_Hammer_15
 ## Notes: Fixes for Professions Order API
 ## Interface: 110002
@@ -8,11 +8,7 @@
 ## AllowLoad: game
 ## AllowLoadGameType: mainline
 ## LoadWith: Blizzard_Professions
-## Dependencies: Blizzard_Professions, Blizzard_ProfessionsTemplates, Blizzard_SharedTalentUI
-ProfessionsOrderFix_ProfessionsTransaction.lua
-ProfessionsOrderFix_ProfessionsRecipeSchematicForm.xml
-ProfessionsOrderFix_ProfessionsCrafting.xml
-ProfessionsOrderFix_ProfessionsCrafterOrderView.xml
+## Dependencies: Blizzard_Professions, Blizzard_ProfessionsTemplates
 ProfessionsOrderFix_ProfessionsCrafterOrderPage.xml
 ProfessionsOrderFix_ProfessionsFrame.xml
 ProfessionsOrderFix_ProfessionsRegistration.lua
