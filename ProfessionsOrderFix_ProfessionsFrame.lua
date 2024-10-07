@@ -31,6 +31,7 @@ function ProfessionsOrderFix_ProfessionsMixin:OnLoad()
 	self:SetClampedToScreen(true);
 	self:SetScript("OnDragStart", self.StartMoving);
 	self:SetScript("OnDragStop", self.StopMovingOrSizing);
+	self:SetPoint("CENTER");
 end
 
 function ProfessionsOrderFix_ProfessionsMixin:OnEvent(event, ...)
