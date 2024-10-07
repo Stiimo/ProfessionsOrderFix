@@ -182,7 +182,7 @@
 				</Frames>
 			</Frame>
 
-			<Frame parentKey="OrderView" inherits="ProfessionsCrafterOrderViewTemplate" hidden="true"/>
+			<Frame parentKey="OrderView" inherits="ProfessionsOrderFix_ProfessionsCrafterOrderViewTemplate" hidden="true"/>
 		</Frames>
 	</Frame>
 </Ui>

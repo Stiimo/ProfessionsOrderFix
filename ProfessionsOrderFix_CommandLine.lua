@@ -36,10 +36,10 @@ end
 -- Function to open/close the window
 function ProfessionsOrderFix_ToggleWindow()
     if ProfessionsOrderFix_ProfessionsFrame:IsShown() then
-        HideUIPanel(ProfessionsOrderFix_ProfessionsFrame)
+        ProfessionsOrderFix_ProfessionsFrame:Hide();
     elseif ProfessionsOrderFix_ProfessionsFrame:IfShouldBeClosed() then
         print("Professions Order Fix window can only be openend along with Blizzard's Professions Frame on Orders Tab.")
     else
-        ShowUIPanel(ProfessionsOrderFix_ProfessionsFrame)
+        ProfessionsOrderFix_ProfessionsFrame:Show();
     end
 end

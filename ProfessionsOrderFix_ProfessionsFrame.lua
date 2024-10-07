@@ -26,6 +26,11 @@ function ProfessionsOrderFix_ProfessionsMixin:OnLoad()
 		local useLastSkillLine = false;
 		self:SetProfessionInfo(info, useLastSkillLine);
 	end, self);
+	self:SetMovable(true);
+	self:RegisterForDrag("LeftButton");
+	self:SetClampedToScreen(true);
+	self:SetScript("OnDragStart", self.StartMoving);
+	self:SetScript("OnDragStop", self.StopMovingOrSizing);
 end
 
 function ProfessionsOrderFix_ProfessionsMixin:OnEvent(event, ...)
@@ -67,7 +72,7 @@ function ProfessionsOrderFix_ProfessionsMixin:OnEvent(event, ...)
 	-- 	local useLastSkillLine = true;
 	-- 	self:SetProfessionInfo(professionInfo, useLastSkillLine);
 	elseif event == "TRADE_SKILL_CLOSE" or event == "GARRISON_TRADESKILL_NPC_CLOSED" then
-		HideUIPanel(self);
+		self:Hide();
 	elseif event == "OPEN_RECIPE_RESPONSE" then
 		local recipeID, professionSkillLineID, expansionSkillLineID = ...;
 		local openRecipeResponse = {skillLineID = expansionSkillLineID, recipeID = recipeID};
@@ -191,7 +196,7 @@ function ProfessionsOrderFix_ProfessionsMixin:UpdateTabs()
 	self.TabSystem:Layout();
 	-- if forceAwayFromOrders or not ProfessionsFrame.craftingOrdersTabID or ProfessionsFrame:GetTab() ~= ProfessionsFrame.craftingOrdersTabID then
 	if not shouldShowCraftingOrders then
-		HideUIPanel(self);
+		self:Hide();
 		return;
 	end
 
@@ -244,7 +249,7 @@ end
 
 function ProfessionsOrderFix_ProfessionsMixin:OnShow()
 	if self:IfShouldBeClosed() then
-		HideUIPanel(self);
+		self:Hide();
 		return;
 	end
 	EventRegistry:TriggerEvent("ProfessionsOrderFix_ProfessionsFrame.Show");
@@ -271,7 +276,7 @@ end
 -- Set dynamically
 function ProfessionsOrderFix_ProfessionsMixin:Update()
 	if self:IfShouldBeClosed() then
-		HideUIPanel(self);
+		self:Hide();
 		return;
 	end
 

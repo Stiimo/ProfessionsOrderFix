@@ -1,0 +1,12 @@
+tag 42916abc032849db14018b84225b6ad96a720c43 v0.9.0
+Author:	Stiimo <abramov.maksim.kzn@gmail.com>
+Date:	Sun Oct 6 14:50:07 2024 +0200
+
+Remove alpha tag to enable project on CurseForge
+
+commit 9283d2653f5a0b47e1cbde0419266ea0355f2ade
+Author: Stiimo <abramov.maksim.kzn@gmail.com>
+Date:   Sun Oct 6 14:49:41 2024 +0200
+
+    Remove alpha tag
+

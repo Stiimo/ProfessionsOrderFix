@@ -596,29 +596,6 @@ function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:RequestMoreOrders
 	self:SendOrderRequest(request);
 end
 
-local recipesWithBrokenOrders = {
-    446935,
-    446934
-};
-
-local function IsBrokenOrder(order)
-    for _, value in pairs(recipesWithBrokenOrders) do
-        if value == order.spellID then
-			return true;
-		end
-	end
-	return false;
-end
-
-local function FixBrokenOrder(order)
-	for _, reagent in pairs(order.reagents) do
-		if reagent.slotIndex == 10 then
-			reagent.slotIndex = reagent.reagent.dataSlotIndex;
-			break;
-		end
-	end
-end
-
 function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:ShowGeneric(orders, browseType, offset, isSorted)
 	if not ProfessionsOrderFix_ProfessionsFrame:IsVisible() then
 		return;
@@ -669,9 +646,6 @@ function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:ShowGeneric(order
 	if offset == 0 then
 		dataProvider = CreateDataProvider();
 		for _, order in ipairs(orders) do
-			if IsBrokenOrder(order) then
-				FixBrokenOrder(order);
-			end
 			dataProvider:Insert({option = order, browseType = browseType, pageFrame = self});
 		end
 		self.BrowseFrame.OrderList.ScrollBox:SetDataProvider(dataProvider);
@@ -679,9 +653,6 @@ function ProfessionsOrderFix_ProfessionsCraftingOrderPageMixin:ShowGeneric(order
 		dataProvider = self.BrowseFrame.OrderList.ScrollBox:GetDataProvider();
 		for idx = offset + 1, #orders do
 			local order = orders[idx];
-			if IsBrokenOrder(order) then
-				FixBrokenOrder(order);
-			end
 			dataProvider:Insert({option = order, browseType = browseType, pageFrame = self});
 		end
 	end
